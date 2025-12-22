@@ -1,0 +1,23 @@
+{
+  "name": "projectmanagment",
+  "version": "1.0.0",
+  "description": "a project managment application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "backend",
+    "api",
+    "project",
+    "management",
+    "app",
+    "nodejs"
+  ],
+  "author": "asiya naveed",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
+}
