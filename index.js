@@ -1,1 +1,1 @@
-console.log("starting project...");
+console.log("starting project setup...");
