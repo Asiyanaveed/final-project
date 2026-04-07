@@ -1,7 +1,7 @@
 import express from "express";
-import { registerUser, login, verifyEmail, logoutUser, resendEmailVerification ,getCurrentUser, refreshAccessToken, forgetPasswordRequest, resetForgotPassword, changeCurrentPassword} from "../controllers/auth.controller.js";
-import { verifyJWT } from "../middlewares/auth-middleware.js";
-import { register } from "module";
+import { registerUser, login, verifyEmail, logoutUser, resendEmailVerification ,getCurrentUser, refreshAccessToken, forgetPasswordRequest, resetForgotPassword, changeCurrentPassword, cbFunction} from "../controllers/auth.controller.js";
+import { verifyJWT, passAuth } from "../middlewares/auth-middleware.js";
+
 
 
 const router = express.Router();
@@ -25,6 +25,23 @@ router.route("/forget-password").post(forgetPasswordRequest); // forget password
 router.route("/reset-password/:resetToken").post(resetForgotPassword); // reset password route
 
 router.route("/change-password").post(verifyJWT, changeCurrentPassword); // change current passwprd
+
+
+
+
+import passport from "../config/passport.js";
+///---------------------LOGIN WITH GOOGLE rOUTE---------------------///
+// redirect user to google for authentication
+router.route("/google").get(passport.authenticate("google", { scope: ["profile", "email"] }));
+
+//  google redirect back here after successful authentication
+router.route("/google/callback").all(passAuth).get(cbFunction)
+
+//failure route for google authentication
+router.route("/google/failure").get((req, res) => {
+   return res.status(401).json({ message: "Google Authentication failed" });
+})
+   
 
 
 

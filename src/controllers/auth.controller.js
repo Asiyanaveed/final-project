@@ -346,7 +346,7 @@ const resetForgotPassword = asyncHandler (async (req,res) => {
     const { resetToken } = req.params; // token from email link
 
     // getting new password from client
-    const  newPassword  = "thisisnewpassword"; // new password from client
+    const  {newPassword}  = req.body;   // new password from client
 
     // if token not found , throw error
     if(!resetToken){
@@ -424,4 +424,43 @@ const changeCurrentPassword = asyncHandler (async (req,res) => {
 
 
 
-export { registerUser , login , verifyEmail, logoutUser, resendEmailVerification, getCurrentUser, refreshAccessToken , forgetPasswordRequest, resetForgotPassword, changeCurrentPassword};
+
+
+
+
+
+ const cbFunction = asyncHandler(async (req, res) => {
+    
+    const user = req.user; // The authenticated user will be available in req.user
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generaterefreshToken();
+
+    // save refresh token in database
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // setting cookies options
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json(
+        new ApiResponse(200,{
+            user: user,
+            accessToken,
+            refreshToken
+          },
+           "User logged in with Google successfully")
+        )
+    ;
+
+})
+
+
+
+export { registerUser , login , verifyEmail, logoutUser, resendEmailVerification, getCurrentUser, refreshAccessToken , forgetPasswordRequest, resetForgotPassword, changeCurrentPassword, cbFunction};
